@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CXTTXN — Home of Fun</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IM+Fell+English:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ─── TOKENS ─────────────────────────────────── */
+:root {
+  --bg:          #0c0b09;
+  --surface:     #131210;
+  --surface-2:   #1b1915;
+  --text:        #ddd8cc;
+  --text-dim:    #6b6558;
+  --brown:       #8c6840;
+  --brown-deep:  #3a2c1e;
+  --red:         #b83535;
+  --cream:       #ede7d8;
+  --chrome:      #c4bfb5;
+  --rule:        1px solid #2a211a;
+}
+
+/* ─── RESET ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ─── GRAIN OVERLAY ──────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: .032;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px;
+}
+
+/* ─── TICKER ─────────────────────────────────── */
+.ticker {
+  background: var(--brown);
+  overflow: hidden;
+  padding: 8px 0;
+  cursor: default;
+}
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 28s linear infinite;
+  width: max-content;
+}
+.ticker-track:hover { animation-play-state: paused; }
+.ticker-item {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  padding-right: 72px;
+}
+.ticker-item .star { margin-right: 16px; opacity: .7; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─── NAV ────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: var(--rule);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color .18s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-ig {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color .18s;
+}
+.nav-ig:hover { color: var(--text); }
+
+/* ─── HERO ───────────────────────────────────── */
+.hero {
+  padding: 48px 40px 40px;
+  border-bottom: var(--rule);
+  overflow: hidden;
+}
+.hero-kicker {
+  font-size: 10px;
+  letter-spacing: .22em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(88px, 17vw, 220px);
+  line-height: .875;
+  letter-spacing: -.01em;
+  color: var(--cream);
+  user-select: none;
+}
+.hero-headline .hollow {
+  -webkit-text-stroke: 1.5px var(--brown);
+  color: transparent;
+}
+.hero-sub {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: var(--rule);
+  gap: 24px;
+}
+.hero-tagline {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(15px, 2.2vw, 24px);
+  color: var(--brown);
+  line-height: 1.3;
+  max-width: 420px;
+}
+.hero-stamp {
+  text-align: right;
+  flex-shrink: 0;
+}
+.hero-stamp-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--chrome);
+  letter-spacing: .06em;
+  display: block;
+}
+.hero-stamp-sub {
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* ─── SECTION LABEL ──────────────────────────── */
+.sec-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: var(--rule);
+}
+.sec-label-text {
+  font-size: 10px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.sec-label-right {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--brown);
+  cursor: pointer;
+}
+
+/* ─── FEATURED DROP ──────────────────────────── */
+.featured {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: var(--rule);
+}
+.featured-visual {
+  background: var(--surface);
+  border-right: var(--rule);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.featured-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.featured-visual:hover img {
+  transform: scale(1.04);
+}
+/* subtle inner texture on visual panel */
+.featured-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,.012) 2px,
+    rgba(255,255,255,.012) 4px
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+.featured-info {
+  padding: 52px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.featured-series {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brown);
+  margin-bottom: 14px;
+}
+.featured-name {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(44px, 5.5vw, 76px);
+  line-height: .95;
+  color: var(--cream);
+}
+.featured-vol {
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+.featured-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.75;
+  max-width: 300px;
+  margin-top: 28px;
+}
+.featured-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: var(--rule);
+}
+.featured-price small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 3px;
+}
+.featured-price strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  color: var(--cream);
+  letter-spacing: .04em;
+  line-height: 1;
+  font-weight: 400;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-size: 10px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  transition: background .18s, color .18s;
+  cursor: pointer;
+  border-radius: 0;
+}
+.btn-fill {
+  background: var(--brown);
+  color: var(--cream);
+  border: 1px solid var(--brown);
+}
+.btn-fill:hover {
+  background: var(--cream);
+  color: var(--bg);
+  border-color: var(--cream);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--brown);
+  border: 1px solid var(--brown);
+}
+.btn-ghost:hover {
+  background: var(--brown);
+  color: var(--cream);
+}
+
+/* ─── ARCHIVE GRID ───────────────────────────── */
+.archive {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: var(--rule);
+}
+.arc-item {
+  border-right: var(--rule);
+  transition: background .2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.arc-item:last-child { border-right: none; }
+.arc-item:hover { background: var(--surface); }
+.arc-thumb {
+  aspect-ratio: 1;
+  background: var(--surface-2);
+  border-bottom: var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.arc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.arc-item:hover .arc-thumb img {
+  transform: scale(1.05);
+}
+.arc-body { padding: 18px 20px 22px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.arc-vol {
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.arc-name {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream);
+  line-height: 1.2;
+}
+.arc-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 9px;
+  letter-spacing: .16em;
+  padding: 3px 8px;
+  text-transform: uppercase;
+  align-self: flex-start;
+  border-radius: 0;
+}
+.arc-badge.sold    { border: 1px solid var(--brown-deep); color: var(--text-dim); }
+.arc-badge.live    { border: 1px solid var(--brown);      color: var(--brown); }
+.arc-badge.ongoing { border: 1px solid var(--brown-deep); color: var(--text-dim); }
+
+/* ─── POPUP EVENT ────────────────────────────── */
+.event {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: var(--rule);
+}
+.event-left {
+  padding: 56px 40px;
+  border-right: var(--rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.event-eyebrow {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brown);
+}
+.event-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 7vw, 104px);
+  line-height: .88;
+  color: var(--cream);
+  letter-spacing: -.01em;
+}
+.event-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.event-right {
+  padding: 56px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+.event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: var(--rule);
+}
+.event-row:first-child { border-top: var(--rule); }
+.event-key {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.event-val {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--cream);
+  text-align: right;
+}
+.event-note {
+  margin-top: 28px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* ─── MANIFESTO STRIP (Vintage Folder Card Style) ─── */
+.manifesto-container {
+  padding: 80px 40px 40px;
+  border-bottom: var(--rule);
+}
+.manifesto {
+  background: var(--cream);
+  color: var(--bg);
+  border: 1px solid #131210;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  position: relative;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--brown-deep);
+  margin: 0 auto;
+  max-width: 1000px;
+}
+.manifesto-tab {
+  position: absolute;
+  top: -29px;
+  left: -1px;
+  background: var(--cream);
+  color: var(--bg);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  padding: 6px 24px 5px;
+  border-top: 1px solid #131210;
+  border-left: 1px solid #131210;
+  border-right: 1px solid #131210;
+  clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
+}
+.manifesto-q {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  line-height: .9;
+  color: var(--bg);
+  -webkit-text-stroke: unset;
+  user-select: none;
+}
+.manifesto-text {
+  font-family: 'Space Mono', monospace;
+  font-style: normal;
+  font-size: 13px;
+  color: #33312e;
+  line-height: 1.65;
+  max-width: 100%;
+}
+.manifesto-text em {
+  color: var(--brown-deep);
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ─── FOOTER ─────────────────────────────────── */
+footer {
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.foot-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: .28em;
+  color: var(--brown);
+}
+.foot-copy {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: .06em;
+}
+.foot-links {
+  display: flex;
+  gap: 20px;
+}
+.foot-links a {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color .18s;
+}
+.foot-links a:hover { color: var(--text); }
+
+/* ─── PRODUCT MODAL (GX1000 Style Split View) ─── */
+.p-modal {
+  display: none;
+  position: fixed;
+  z-index: 20000;
+  inset: 0;
+  background: rgba(12, 11, 9, 0.95);
+  overflow-y: auto;
+  backdrop-filter: blur(8px);
+}
+.p-modal-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-left: var(--rule);
+  border-right: var(--rule);
+  background: var(--bg);
+  position: relative;
+}
+.p-modal-gallery {
+  border-right: var(--rule);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+  height: 100vh;
+  scrollbar-width: none;
+}
+.p-modal-gallery::-webkit-scrollbar { display: none; }
+.p-modal-gallery img {
+  width: 100%;
+  object-fit: cover;
+  border: var(--rule);
+  background: var(--surface);
+}
+.p-modal-info {
+  padding: 60px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+}
+.p-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 48px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: .15em;
+  cursor: pointer;
+  transition: color 0.18s;
+  z-index: 21000;
+}
+.p-modal-close:hover { color: var(--cream); }
+
+.p-modal-sizes {
+  margin: 28px 0;
+}
+.p-modal-sizes-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  margin-bottom: 12px;
+}
+.p-modal-sizes-grid {
+  display: flex;
+  gap: 10px;
+}
+.p-modal-size-btn {
+  width: 48px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--brown-deep);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.p-modal-size-btn:hover, .p-modal-size-btn.active {
+  border-color: var(--brown);
+  color: var(--cream);
+  background: var(--brown-deep);
+}
+.p-modal-desc {
+  margin-bottom: 28px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+.p-modal-desc p {
+  margin-bottom: 16px;
+}
+.p-modal-desc ul {
+  list-style: none;
+  padding-left: 0;
+}
+.p-modal-desc li {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.p-modal-desc li::before {
+  content: '■';
+  color: var(--brown);
+  font-size: 8px;
+  flex-shrink: 0;
+}
+.p-modal-cta {
+  margin-top: 40px;
+  border-top: var(--rule);
+  padding-top: 24px;
+}
+
+/* ─── EVENT CATALOG SLIDER ───────────────────── */
+.event-catalog {
+  border-top: var(--rule);
+  padding: 40px;
+  background: var(--surface);
+  position: relative;
+}
+.event-catalog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.event-catalog-title {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brown);
+}
+.event-slider-nav {
+  display: flex;
+  gap: 12px;
+}
+.event-slider-btn {
+  background: transparent;
+  border: 1px solid var(--brown);
+  color: var(--brown);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: .1em;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border-radius: 0;
+}
+.event-slider-btn:hover {
+  background: var(--brown);
+  color: var(--cream);
+}
+.event-slider-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+.event-slider-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.event-slider-card {
+  flex: 0 0 calc((100% - 40px) / 3); /* 3 cards visible on desktop */
+  background: var(--bg);
+  border: var(--rule);
+  display: flex;
+  flex-direction: column;
+}
+.event-slider-img {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-bottom: var(--rule);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.event-slider-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.event-slider-card:hover .event-slider-img img {
+  transform: scale(1.04);
+}
+.event-slider-body {
+  padding: 18px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+.event-slider-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.event-slider-vol {
+  font-size: 8px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.event-slider-name {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--cream);
+  line-height: 1.25;
+}
+.event-slider-price {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--brown);
+  font-weight: 700;
+  margin-top: 4px;
+}
+.event-slider-sizes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px dashed var(--brown-deep);
+  padding-top: 10px;
+}
+.event-slider-size-title {
+  font-size: 8px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.event-slider-size-list {
+  display: flex;
+  gap: 6px;
+}
+.event-slider-size-item {
+  font-size: 9px;
+  padding: 2px 6px;
+  border: 1px solid var(--brown-deep);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  cursor: default;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 800px) {
+  nav { padding: 16px 20px; }
+  .nav-links { display: none; }
+
+  .hero { padding: 36px 20px 32px; }
+
+  .sec-label { padding: 18px 20px; }
+
+  .featured { grid-template-columns: 1fr; }
+  .featured-visual {
+    border-right: none;
+    border-bottom: var(--rule);
+    aspect-ratio: 4/3;
+  }
+  .featured-info { padding: 32px 20px 36px; }
+  .featured-footer { margin-top: 28px; padding-top: 24px; }
+
+  .archive { grid-template-columns: repeat(2, 1fr); }
+  .arc-item { border-right: var(--rule); }
+  .arc-item:nth-child(2n) { border-right: none; }
+  .arc-item:last-child { border-right: none; }
+
+  .event { grid-template-columns: 1fr; }
+  .event-left {
+    border-right: none;
+    border-bottom: var(--rule);
+    padding: 40px 20px;
+    min-height: auto;
+  }
+  .event-right { padding: 32px 20px; }
+
+  .manifesto-container { padding: 40px 20px; }
+  .manifesto { padding: 28px 20px; }
+
+  footer {
+    padding: 24px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  /* Modal Mobile responsive */
+  .p-modal-content {
+    grid-template-columns: 1fr;
+  }
+  .p-modal-gallery {
+    border-right: none;
+    border-bottom: var(--rule);
+    height: auto;
+    overflow-y: visible;
+    padding: 20px;
+  }
+  .p-modal-info {
+    height: auto;
+    position: static;
+    padding: 30px 20px;
+    overflow-y: visible;
+  }
+  .p-modal-close {
+    top: 16px;
+    right: 20px;
+  }
+
+  /* Slider Mobile Responsive */
+  .event-catalog {
+    padding: 24px 20px;
+  }
+  .event-slider-card {
+    flex: 0 0 100%; /* 1 card visible on mobile */
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="star">★</span>POP UP AT COLORTONES — 20–23 JUNE 2026 — YOGYAKARTA</span>
+    <span class="ticker-item"><span class="star">★</span>STAR BOUND VOL.11 — PRE-ORDER 18–25 MAY</span>
+    <span class="ticker-item"><span class="star">★</span>COMPOSED IN CHAOS VOL.10 — 160K / DP 100K</span>
+    <span class="ticker-item"><span class="star">★</span>STICKER PACK INCLUDED ON SELECT PURCHASES</span>
+    <span class="ticker-item"><span class="star">★</span>POP UP AT COLORTONES — 20–23 JUNE 2026 — YOGYAKARTA</span>
+    <span class="ticker-item"><span class="star">★</span>STAR BOUND VOL.11 — PRE-ORDER 18–25 MAY</span>
+    <span class="ticker-item"><span class="star">★</span>COMPOSED IN CHAOS VOL.10 — 160K / DP 100K</span>
+    <span class="ticker-item"><span class="star">★</span>STICKER PACK INCLUDED ON SELECT PURCHASES</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="../logo-removebg-preview.png" alt="CXTTXN Logo" style="height: 48px; width: auto; object-fit: contain;">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#drop">Latest Drop</a></li>
+    <li><a href="#archive">Archive</a></li>
+    <li><a href="#event">Pop Up</a></li>
+  </ul>
+  <div style="display: flex; gap: 24px; align-items: center;">
+    <a href="https://instagram.com/cxttxnnn" target="_blank" rel="noopener" class="nav-ig">↗ @cxttxnnn</a>
+    <button id="cart-nav-btn" onclick="openCartModal()" style="background: transparent; border: none; color: var(--cream); font-family: inherit; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+      🛒 CART <span id="cart-count-badge" style="background: var(--brown); color: var(--cream); padding: 1px 6px; font-size: 9px; font-weight: 700; display: none;">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-kicker">©XTTXN · Yogyakarta, ID · Est. 2322+4</p>
+  <h1 class="hero-headline" aria-label="CXTTXN Home of Fun">
+    <span style="display:block">CXTTXN</span>
+    <span class="hollow" style="display:block">HOME</span>
+    <span class="hollow" style="display:block">OF FUN.</span>
+  </h1>
+  <div class="hero-sub">
+    <p class="hero-tagline">
+      integrity stays,<br>nothing else does.
+    </p>
+    <div class="hero-stamp">
+      <span class="hero-stamp-num">2322+4</span>
+      <span class="hero-stamp-sub">Series Ongoing</span>
+    </div>
+  </div>
+</section>
+
+<!-- CURRENT DROP -->
+<section id="drop">
+  <div class="sec-label">
+    <span class="sec-label-text">Latest Drop</span>
+    <span class="sec-label-right" onclick="openProduct('vol11')">Quick View ↗</span>
+  </div>
+  <div class="featured">
+    <div class="featured-visual" onclick="openProduct('vol11')" aria-label="View Star Bound Hoodie details">
+      <img src="event_vol11.jpg" alt="Vol.11 Star Bound Hoodie">
+    </div>
+    <div class="featured-info">
+      <div>
+        <p class="featured-series">Current Series — Star Bound</p>
+        <h2 class="featured-name" style="cursor: pointer;" onclick="openProduct('vol11')">Star<br>Bound</h2>
+        <p class="featured-vol">CXTTXN Vol.11 · 2322+4 · Cotton Fleece 300gsm</p>
+        <p class="featured-desc">
+          A form of love that stays quiet, but never leaves.
+          Oversize fit. Choose INT or KEY series styles.
+          Sticker pack included on purchase.
+        </p>
+      </div>
+      <div class="featured-footer">
+        <div class="featured-price">
+          <small>Starting from</small>
+          <strong>160K</strong>
+        </div>
+        <button onclick="openProduct('vol11')" class="btn btn-fill">
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="archive">
+  <div class="sec-label">
+    <span class="sec-label-text">Archive</span>
+    <a href="https://instagram.com/cxttxnnn" target="_blank" rel="noopener" class="sec-label-right">
+      View All on IG ↗
+    </a>
+  </div>
+  <div class="archive">
+    <div class="arc-item" onclick="openProduct('vol10')">
+      <div class="arc-thumb">
+        <img src="event_vol10.jpg" alt="Composed in Chaos">
+      </div>
+      <div class="arc-body">
+        <div>
+          <p class="arc-vol">Vol.10</p>
+          <h3 class="arc-name">Composed<br>in Chaos</h3>
+        </div>
+        <span class="arc-badge live">Available — 160K</span>
+      </div>
+    </div>
+    <div class="arc-item" onclick="openProduct('vol09')">
+      <div class="arc-thumb">
+        <img src="event_vol9.jpg" alt="Quiet Devotion">
+      </div>
+      <div class="arc-body">
+        <div>
+          <p class="arc-vol">Vol.09</p>
+          <h3 class="arc-name">Quiet<br>Devotion</h3>
+        </div>
+        <span class="arc-badge sold">Sold Out — 120K</span>
+      </div>
+    </div>
+    <div class="arc-item" onclick="openProduct('vol08')">
+      <div class="arc-thumb">
+        <img src="event_vol8.jpg" alt="Glass Series">
+      </div>
+      <div class="arc-body">
+        <div>
+          <p class="arc-vol">Vol.08</p>
+          <h3 class="arc-name">Glass<br>Series</h3>
+        </div>
+        <span class="arc-badge sold">Sold Out — 120K</span>
+      </div>
+    </div>
+    <div class="arc-item" onclick="openProduct('vol07')">
+      <div class="arc-thumb">
+        <img src="vol07_certified_lover.jpg" alt="Certified Lover">
+      </div>
+      <div class="arc-body">
+        <div>
+          <p class="arc-vol">Vol.07</p>
+          <h3 class="arc-name">Certified<br>Lover</h3>
+        </div>
+        <span class="arc-badge sold">Sold Out — 110K</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POP UP EVENT -->
+<section id="event">
+  <div class="sec-label">
+    <span class="sec-label-text">Upcoming Event</span>
+  </div>
+  <div class="event">
+    <div class="event-left">
+      <p class="event-eyebrow">Pop Up Store</p>
+      <h2 class="event-big">AT<br>COLOR<br>TONES.</h2>
+      <div class="event-cta">
+        <a href="https://instagram.com/cxttxnnn" target="_blank" rel="noopener" class="btn btn-fill">
+          IG for Updates
+        </a>
+      </div>
+    </div>
+    <div class="event-right">
+      <div>
+        <div class="event-row">
+          <span class="event-key">Date</span>
+          <span class="event-val">20 — 23 June 2026</span>
+        </div>
+        <div class="event-row">
+          <span class="event-key">Venue</span>
+          <span class="event-val">Colortones</span>
+        </div>
+        <div class="event-row">
+          <span class="event-key">City</span>
+          <span class="event-val">Yogyakarta, ID</span>
+        </div>
+        <div class="event-row">
+          <span class="event-key">Brand</span>
+          <span class="event-val">©XTTXN / 2322+4</span>
+        </div>
+      </div>
+      <p class="event-note">
+        Come through. See the drops in person.<br>
+        Sticker pack on select purchases.<br>
+        All series available on-site.
+      </p>
+    </div>
+  </div>
+
+  <!-- Event Catalog Slider -->
+  <div class="event-catalog">
+    <div class="event-catalog-header">
+      <span class="event-catalog-title">Pop Up Exclusive Catalog & Sizes</span>
+      <div class="event-slider-nav">
+        <button class="event-slider-btn" onclick="slideEvent(-1)">[ PREV ]</button>
+        <button class="event-slider-btn" onclick="slideEvent(1)">[ NEXT ]</button>
+      </div>
+    </div>
+    <div class="event-slider-wrapper">
+      <div class="event-slider-track" id="event-slider-track">
+        
+        <!-- Item 1: Vol.11 Hoodie -->
+        <div class="event-slider-card" onclick="openProduct('vol11')">
+          <div class="event-slider-img">
+            <img src="event_vol11.jpg" alt="Vol. 11 Hoodies">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">Vol.11 / Star Bound</span>
+              <h4 class="event-slider-name">BW Fleece Hoodie</h4>
+              <span class="event-slider-price">Rp 320.000</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Vol.10 Crewneck -->
+        <div class="event-slider-card" onclick="openProduct('vol10')">
+          <div class="event-slider-img">
+            <img src="event_vol10.jpg" alt="Vol. 10 Crewneck">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">Vol.10 / Composed in Chaos</span>
+              <h4 class="event-slider-name">Brown Crewneck</h4>
+              <span class="event-slider-price">Rp 160.000</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: Vol.9 Tee -->
+        <div class="event-slider-card" onclick="openProduct('vol09')">
+          <div class="event-slider-img">
+            <img src="event_vol9.jpg" alt="Vol. 9 Quiet Devotion Tee">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">Vol.09 / Quiet Devotion</span>
+              <h4 class="event-slider-name">White Oversize Tee</h4>
+              <span class="event-slider-price">Rp 120.000</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Vol.8 Tee -->
+        <div class="event-slider-card" onclick="openProduct('vol08')">
+          <div class="event-slider-img">
+            <img src="event_vol8.jpg" alt="Vol. 8 Glass Tee">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">Vol.08 / Glass Series</span>
+              <h4 class="event-slider-name">Black Oversize Tee</h4>
+              <span class="event-slider-price">Rp 120.000</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5: The Menu (Special Event Tee) -->
+        <div class="event-slider-card" onclick="openProduct('menu')">
+          <div class="event-slider-img">
+            <img src="event_menu.jpg" alt="The Menu Special Tee">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">Pop Up Special / Colortones Menu</span>
+              <h4 class="event-slider-name">Poodle Box Tee</h4>
+              <span class="event-slider-price">Rp 110.000</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO STRIP (Vintage Manila Folder Card) -->
+<div class="manifesto-container">
+  <div class="manifesto">
+    <div class="manifesto-tab">MANIFESTO / ROC</div>
+    <div class="manifesto-q">ROC.</div>
+    <p class="manifesto-text">
+      <em>did you work at the meaning of life?</em><br><br>
+      A place for fun even when it feels off.<br>
+      People leave. Things change. <em>Integrity stays</em>, nothing else does.<br>
+      We make things because we have to.
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="foot-brand">©XTTXN</span>
+  <span class="foot-copy">Yogyakarta, ID — Est. 2322+4</span>
+  <div class="foot-links">
+    <a href="https://instagram.com/cxttxnnn" target="_blank" rel="noopener">Instagram</a>
+    <a href="#drop">Drops</a>
+    <a href="#archive">Archive</a>
+    <a href="#event">Pop Up</a>
+  </div>
+</footer>
+
+<!-- PRODUCT DETAIL MODAL (GX1000 Style Split View) -->
+<div id="product-modal" class="p-modal">
+  <button class="p-modal-close" onclick="closeModal()">[ CLOSE ]</button>
+  <div class="p-modal-content">
+    <div class="p-modal-gallery" id="modal-gallery">
+      <!-- Dynamic images stack here -->
+    </div>
+    <div class="p-modal-info">
+      <div>
+        <span id="modal-series"></span>
+        <h2 id="modal-title" class="featured-name" style="margin: 10px 0 15px; font-size: clamp(32px, 4.5vw, 56px);"></h2>
+        <p id="modal-vol" style="font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 24px;"></p>
+        <div id="modal-price" style="font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--cream); letter-spacing: .04em; margin-bottom: 28px; line-height: 1;"></div>
+        
+        <div class="p-modal-sizes">
+          <div class="p-modal-sizes-label">Select Size</div>
+          <div class="p-modal-sizes-grid">
+            <button class="p-modal-size-btn" onclick="selectSize(this)">S</button>
+            <button class="p-modal-size-btn" onclick="selectSize(this)">M</button>
+            <button class="p-modal-size-btn active" onclick="selectSize(this)">L</button>
+            <button class="p-modal-size-btn" onclick="selectSize(this)">XL</button>
+          </div>
+        </div>
+
+        <div class="p-modal-desc" id="modal-desc">
+          <!-- Dynamic descriptions & bullets here -->
+        </div>
+      </div>
+      
+      <div class="p-modal-cta">
+        <button id="add-to-cart-btn" class="btn btn-fill" style="width: 100%; text-align: center; display: block; padding: 16px; font-size: 11px;" onclick="handleAddToCartClick()">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div id="cart-modal" class="p-modal">
+  <button class="p-modal-close" onclick="closeCartModal()">[ CLOSE ]</button>
+  <div class="p-modal-content" style="max-width: 800px; min-height: auto; margin: 80px auto; border: var(--rule); display: block;">
+    <div style="padding: 48px;">
+      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--cream); letter-spacing: .08em; margin-bottom: 28px;">Shopping Cart</h2>
+      <div id="cart-items-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal" class="p-modal">
+  <button class="p-modal-close" onclick="closeCheckoutModal()">[ CLOSE ]</button>
+  <div class="p-modal-content" style="max-width: 600px; min-height: auto; margin: 80px auto; border: var(--rule); display: block;">
+    <div style="padding: 48px;">
+      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--cream); letter-spacing: .08em; margin-bottom: 28px;">Checkout</h2>
+      <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)" style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim);">Full Name</span>
+          <input type="text" id="checkout-name" required style="background: var(--bg); border: var(--rule); padding: 12px; color: var(--text); font-family: inherit; font-size: 12px; border-radius: 0;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim);">Email Address</span>
+          <input type="email" id="checkout-email" required style="background: var(--bg); border: var(--rule); padding: 12px; color: var(--text); font-family: inherit; font-size: 12px; border-radius: 0;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim);">WhatsApp / Phone</span>
+          <input type="tel" id="checkout-phone" required style="background: var(--bg); border: var(--rule); padding: 12px; color: var(--text); font-family: inherit; font-size: 12px; border-radius: 0;" />
+        </div>
+        <div style="background: var(--surface); border: var(--rule); padding: 20px; font-size: 11px; line-height: 1.8; color: var(--text-dim); margin-top: 10px;">
+          <p style="margin-bottom: 6px; color: var(--text); font-weight: 700;">📌 Payment & Delivery Information:</p>
+          <p>📧 Complete bank transfer details will be sent to your email.</p>
+          <p>💰 Please complete the transfer and keep your receipt.</p>
+          <p>📲 Our team will confirm your order status via WhatsApp.</p>
+          <p>📦 Shipping takes 2-3 business days after confirmation.</p>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 10px;">
+          <button type="submit" class="btn btn-fill" style="flex: 1; padding: 16px;">Place Order</button>
+          <button type="button" class="btn btn-ghost" onclick="backToCartFromCheckout()" style="padding: 16px;">Back to Cart</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER CONFIRMATION MODAL -->
+<div id="confirmation-modal" class="p-modal">
+  <div class="p-modal-content" style="max-width: 600px; min-height: auto; margin: 80px auto; border: var(--rule); display: block;">
+    <div style="padding: 48px; text-align: center;">
+      <div style="font-size: 56px; color: var(--brown); margin-bottom: 20px; line-height: 1;">✓</div>
+      <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--cream); letter-spacing: .08em; margin-bottom: 12px;">Order Placed!</h2>
+      <p style="font-size: 12px; color: var(--text-dim); line-height: 1.8; margin-bottom: 28px; max-width: 440px; margin-left: auto; margin-right: auto;">
+        Thank you for your order. We've received your details and will process your order shortly.
+      </p>
+      <div style="background: var(--surface); border: var(--rule); padding: 24px; text-align: left; margin-bottom: 28px;">
+        <div style="margin-bottom: 16px;">
+          <span style="font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Order ID</span>
+          <span id="confirm-order-id" style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--cream); letter-spacing: .06em;">CX-XXXXXX</span>
+        </div>
+        <div>
+          <span style="font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 8px;">Next Steps</span>
+          <ul style="font-size: 11px; color: var(--text); line-height: 1.8; list-style: none; padding-left: 0;">
+            <li style="display: flex; gap: 8px; align-items: baseline;"><span style="color: var(--brown);">■</span> Check your email for bank transfer details</li>
+            <li style="display: flex; gap: 8px; align-items: baseline;"><span style="color: var(--brown);">■</span> Complete the transfer with the exact amount</li>
+            <li style="display: flex; gap: 8px; align-items: baseline;"><span style="color: var(--brown);">■</span> We'll confirm the shipment via WhatsApp</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <button class="btn btn-fill" onclick="closeConfirmationModal()" style="width: 100%; padding: 16px;">Continue Shopping</button>
+        <a href="https://instagram.com/cxttxnnn" target="_blank" rel="noopener" class="btn btn-ghost" style="text-align: center; display: block; padding: 14px;">Follow us on Instagram</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── MODE DETECTION SYSTEM ──────────────────────
+// Development mode: when opened locally (file:// or localhost)
+// Publish mode: when deployed to production
+const isDevelopment = window.location.protocol === 'file:' ||
+                      window.location.hostname === 'localhost' ||
+                      window.location.hostname === '127.0.0.1';
+const isPublished = !isDevelopment;
+console.log(`[MODE] ${isDevelopment ? 'DEVELOPMENT' : 'PUBLISH'} | URL: ${window.location.href}`);
+
+const SUPABASE_URL = 'https://puwmufdzlthygruzuefp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1d211ZmR6bHRoeWdydXp1ZWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNjEyOTIsImV4cCI6MjA5NjczNzI5Mn0.-aoPcLniDTLi-faaysk0LlkKbac_rsxx0jNDgK2cf7c';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const defaultProducts = {
+  vol11: {
+    id: "vol11",
+    series: "Current Series — Star Bound",
+    title: "Star Bound Hoodie & Tee",
+    name: "Star Bound Hoodie & Tee",
+    vol: "CXTTXN Vol.11 · 2322+4",
+    price: 320000,
+    priceDisplay: "Rp 320.000",
+    images: ["event_vol11.jpg"],
+    bullets: [
+      "Cotton Fleece 300gsm (Hoodie) or Heavyweight Cotton 24s (Tee)",
+      "Oversize boxy fit with drop shoulders",
+      "Premium plastisol & HD print graphics",
+      "Sticker pack and special packaging included on purchase",
+      "Available in INT and KEY series variations"
+    ],
+    description: "A form of love that stays quiet, but never leaves. Composed for those who wander under starry skies. Integrity stays."
+  },
+  vol10: {
+    id: "vol10",
+    series: "Archive Series — Composed in Chaos",
+    title: "Composed in Chaos Crewneck",
+    name: "Composed in Chaos Crewneck",
+    vol: "CXTTXN Vol.10 · 2322+4",
+    price: 160000,
+    priceDisplay: "Rp 160.000",
+    images: ["event_vol10.jpg"],
+    bullets: [
+      "Premium Cotton Fleece 300gsm",
+      "Pixelated chest screenprint composition",
+      "Classic boxy fit",
+      "Comes with exclusive compost sticker pack"
+    ],
+    description: "A visual representation of finding balance within noise. Pay when you get the tee club release."
+  },
+  vol09: {
+    id: "vol09",
+    series: "Archive Series — Quiet Devotion",
+    title: "Quiet Devotion Tee",
+    name: "Quiet Devotion Tee",
+    vol: "CXTTXN Vol.09 · 2322+4",
+    price: 120000,
+    priceDisplay: "Rp 120.000",
+    images: ["event_vol9.jpg"],
+    bullets: [
+      "Oversize Heavyweight Cotton 210gsm",
+      "High definition DTF print",
+      "Detailed blue gothic cathedral architectural sketch",
+      "Pre-order limited release (1-10 Feb)"
+    ],
+    description: "A quiet devotion that stands like old stone architecture. A form of love that stays quiet, but never leaves."
+  },
+  vol08: {
+    id: "vol08",
+    series: "Archive Series — Glass Series",
+    title: "Glass Tee / don't you worry baby",
+    name: "Glass Tee",
+    vol: "CXTTXN Vol.08 · 2322+4",
+    price: 120000,
+    priceDisplay: "Rp 120.000",
+    images: ["event_vol8.jpg"],
+    bullets: [
+      "Oversize Heavyweight Cotton 210gsm",
+      "Front screenprinted 'don't you worry baby GLASS' artwork",
+      "Classic skater boxy fit",
+      "High definition DTF printing",
+      "Pre-order limited release (8-18 Nov)"
+    ],
+    description: "don't you worry baby, i've got time and i'm gon' give it to you. A special tribute design."
+  },
+  vol07: {
+    id: "vol07",
+    series: "Archive Series — Certified Lover",
+    title: "Certified Lover Tees",
+    name: "Certified Lover Tees",
+    vol: "CXTTXN Vol.07 · 2322+4",
+    price: 110000,
+    priceDisplay: "Rp 110.000",
+    images: ["vol07_certified_lover.jpg"],
+    bullets: [
+      "Heavyweight Cotton 24s",
+      "Floppy disk heart chest print",
+      "Back print 'sometimes home breathes'",
+      "High definition DTF printing"
+    ],
+    description: "Certified Lover marks all who dare to love. Sometimes home breathes, sometimes it is composed in chaos."
+  },
+  menu: {
+    id: "menu",
+    series: "Pop Up Exclusive — The Menu",
+    title: "Poodle Box Tee",
+    name: "Poodle Box Tee",
+    vol: "CXTTXN Pop Up Store Special",
+    price: 110000,
+    priceDisplay: "Rp 110.000",
+    images: ["event_menu.jpg"],
+    bullets: [
+      "Heavyweight Cotton 24s Black Tee",
+      "Front cute poodle sitting on stack of boxes graphic",
+      "Special limited release for Colortones Pop Up Event",
+      "Available with exclusive drink bundling offer on-site"
+    ],
+    description: "The special edition item for the Yogyakarta Pop Up Store at Colortones. Come through, see the drops in person."
+  }
+};
+
+let products = {};
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let currentProductId = null;
+let currentSelectedSize = 'L';
+
+async function initStore() {
+  try {
+    // MODE LOGIC: Development uses dummy data, Publish uses Supabase
+    if (isDevelopment) {
+      console.log('[DEVELOPMENT MODE] Using local dummy data for products');
+      products = defaultProducts;
+      updateCartCountBadge();
+      return;
+    }
+
+    // PUBLISH MODE: Fetch from Supabase
+    console.log('[PUBLISH MODE] Fetching from Supabase cloud...');
+
+    // 1. Fetch website settings
+    const { data: settingsData } = await supabaseClient.from('website_settings').select('value').eq('key', 'general').single();
+    if (settingsData && settingsData.value) {
+      applySettings(settingsData.value);
+    }
+
+    // 2. Fetch products
+    const { data: dbProducts, error } = await supabaseClient.from('products').select('*').eq('status', 'active').order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (dbProducts && dbProducts.length > 0) {
+      products = {};
+      dbProducts.forEach(p => {
+        products[p.id] = mapSupabaseProduct(p);
+      });
+      renderStorefront(dbProducts);
+    } else {
+      console.log('No active products in database, using fallback catalog.');
+      products = defaultProducts;
+    }
+  } catch (err) {
+    console.error('Supabase load failed. Running local fallback mode.', err);
+    products = defaultProducts;
+  }
+
+  updateCartCountBadge();
+}
+
+function mapSupabaseProduct(p) {
+  let pImage = 'event_vol11.jpg';
+  if (p.images && p.images.length > 0 && p.images[0]) {
+    pImage = p.images[0];
+  } else {
+    const s = (p.series || '').toLowerCase();
+    const n = (p.name || '').toLowerCase();
+    if (s.includes('11') || s.includes('star')) pImage = 'event_vol11.jpg';
+    else if (s.includes('10') || s.includes('chaos')) pImage = 'event_vol10.jpg';
+    else if (s.includes('9') || s.includes('devotion')) pImage = 'event_vol9.jpg';
+    else if (s.includes('8') || s.includes('glass')) pImage = 'event_vol8.jpg';
+    else if (s.includes('7') || s.includes('certified')) pImage = 'vol07_certified_lover.jpg';
+    else if (n.includes('poodle') || n.includes('menu')) pImage = 'event_menu.jpg';
+  }
+
+  let bullets = [
+    `Cotton Fleece / Heavyweight Cotton`,
+    `Premium prints & graphics`,
+    `Oversize boxy fit with drop shoulders`
+  ];
+  
+  return {
+    id: p.id,
+    series: p.series || 'CXTTXN Collection',
+    title: p.name,
+    name: p.name,
+    vol: p.series || 'CXTTXN Series',
+    price: p.price,
+    priceDisplay: `Rp ${p.price.toLocaleString('id-ID')}`,
+    images: [pImage],
+    bullets: bullets,
+    description: p.description || 'A form of love that stays quiet, but never leaves.'
+  };
+}
+
+function applySettings(val) {
+  if (val.ticker_text) {
+    const tracks = document.querySelectorAll('.ticker-track');
+    tracks.forEach(track => {
+      track.innerHTML = `
+        <span class="ticker-item"><span class="star">★</span>${val.ticker_text}</span>
+        <span class="ticker-item"><span class="star">★</span>${val.ticker_text}</span>
+        <span class="ticker-item"><span class="star">★</span>${val.ticker_text}</span>
+        <span class="ticker-item"><span class="star">★</span>${val.ticker_text}</span>
+      `;
+    });
+  }
+  
+  if (val.hero_tagline) {
+    const taglines = document.querySelectorAll('.hero-tagline');
+    taglines.forEach(tag => {
+      tag.innerHTML = val.hero_tagline.replace(/\n/g, '<br>');
+    });
+  }
+  
+  if (val.hero_stamp) {
+    const stamps = document.querySelectorAll('.hero-stamp-num');
+    stamps.forEach(s => s.innerText = val.hero_stamp);
+    const kickers = document.querySelectorAll('.hero-kicker');
+    kickers.forEach(k => k.innerText = `©XTTXN · Yogyakarta, ID · Est. ${val.hero_stamp}`);
+  }
+  
+  if (val.manifesto_text) {
+    const textEls = document.querySelectorAll('.manifesto-text');
+    textEls.forEach(el => {
+      el.innerHTML = val.manifesto_text;
+    });
+  }
+  
+  if (val.event_title) {
+    const eventBig = document.querySelector('.event-big');
+    if (eventBig) eventBig.innerHTML = val.event_title.replace(/\s+/g, '<br>');
+  }
+  
+  const eventValEls = document.querySelectorAll('.event-val');
+  if (eventValEls.length >= 3) {
+    if (val.event_date) eventValEls[0].innerText = val.event_date;
+    if (val.event_venue) eventValEls[1].innerText = val.event_venue;
+    if (val.event_city) eventValEls[2].innerText = val.event_city;
+  }
+}
+
+function renderStorefront(dbProducts) {
+  const featured = dbProducts[0];
+  const featuredImage = getProductImage(featured);
+  const featuredSec = document.getElementById('drop');
+  if (featuredSec) {
+    featuredSec.innerHTML = `
+      <div class="sec-label">
+        <span class="sec-label-text">Latest Drop</span>
+        <span class="sec-label-right" onclick="openProduct('${featured.id}')">Quick View ↗</span>
+      </div>
+      <div class="featured">
+        <div class="featured-visual" onclick="openProduct('${featured.id}')" aria-label="View ${featured.name} details">
+          <img src="${featuredImage}" alt="${featured.name}">
+        </div>
+        <div class="featured-info">
+          <div>
+            <p class="featured-series">${featured.series || 'Current Drop'}</p>
+            <h2 class="featured-name" style="cursor: pointer;" onclick="openProduct('${featured.id}')">${featured.name.replace(/\s+/g, '<br>')}</h2>
+            <p class="featured-vol">${featured.series || 'Vol.11'} · Rp ${featured.price.toLocaleString('id-ID')}</p>
+            <p class="featured-desc">
+              ${featured.description || 'A form of love that stays quiet, but never leaves.'}
+            </p>
+          </div>
+          <div class="featured-footer">
+            <div class="featured-price">
+              <small>Price</small>
+              <strong>Rp ${featured.price.toLocaleString('id-ID')}</strong>
+            </div>
+            <button onclick="openProduct('${featured.id}')" class="btn btn-fill">
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  const archiveGrid = document.querySelector('#archive .archive');
+  if (archiveGrid) {
+    const archiveProducts = dbProducts.slice(1, 5);
+    if (archiveProducts.length === 0) {
+      archiveGrid.innerHTML = '<div style="padding: 40px; color: var(--text-dim); text-align: center; grid-column: 1/-1;">Check back soon for archive releases.</div>';
+    } else {
+      archiveGrid.innerHTML = archiveProducts.map(p => {
+        const pImage = getProductImage(p);
+        return `
+          <div class="arc-item" onclick="openProduct('${p.id}')">
+            <div class="arc-thumb">
+              <img src="${pImage}" alt="${p.name}">
+            </div>
+            <div class="arc-body">
+              <div>
+                <p class="arc-vol">${p.series || 'Archive'}</p>
+                <h3 class="arc-name">${p.name.replace(/\s+/g, '<br>')}</h3>
+              </div>
+              <span class="arc-badge live">Rp ${p.price.toLocaleString('id-ID')}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+  
+  const sliderTrack = document.getElementById('event-slider-track');
+  if (sliderTrack) {
+    sliderTrack.innerHTML = dbProducts.map(p => {
+      const pImage = getProductImage(p);
+      return `
+        <div class="event-slider-card" onclick="openProduct('${p.id}')">
+          <div class="event-slider-img">
+            <img src="${pImage}" alt="${p.name}">
+          </div>
+          <div class="event-slider-body">
+            <div class="event-slider-info">
+              <span class="event-slider-vol">${p.series || 'Series'}</span>
+              <h4 class="event-slider-name">${p.name}</h4>
+              <span class="event-slider-price">Rp ${p.price.toLocaleString('id-ID')}</span>
+            </div>
+            <div class="event-slider-sizes">
+              <span class="event-slider-size-title">On-site Sizes Available</span>
+              <div class="event-slider-size-list">
+                <span class="event-slider-size-item">S</span>
+                <span class="event-slider-size-item">M</span>
+                <span class="event-slider-size-item">L</span>
+                <span class="event-slider-size-item">XL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function getProductImage(p) {
+  if (p.images && p.images.length > 0 && p.images[0]) {
+    return p.images[0];
+  }
+  const s = (p.series || '').toLowerCase();
+  const n = (p.name || '').toLowerCase();
+  if (s.includes('11') || s.includes('star')) return 'event_vol11.jpg';
+  if (s.includes('10') || s.includes('chaos')) return 'event_vol10.jpg';
+  if (s.includes('9') || s.includes('devotion')) return 'event_vol9.jpg';
+  if (s.includes('8') || s.includes('glass')) return 'event_vol8.jpg';
+  if (s.includes('7') || s.includes('certified')) return 'vol07_certified_lover.jpg';
+  if (n.includes('poodle') || n.includes('menu')) return 'event_menu.jpg';
+  return 'event_vol11.jpg';
+}
+
+function openProduct(id) {
+  const prod = products[id];
+  if (!prod) return;
+  
+  currentProductId = id;
+  currentSelectedSize = 'L';
+  
+  document.getElementById('modal-series').innerText = prod.series;
+  document.getElementById('modal-title').innerHTML = prod.title;
+  document.getElementById('modal-vol').innerText = prod.vol;
+  document.getElementById('modal-price').innerText = typeof prod.price === 'number' ? `Rp ${prod.price.toLocaleString('id-ID')}` : prod.price;
+  
+  const gallery = document.getElementById('modal-gallery');
+  gallery.innerHTML = '';
+  prod.images.forEach(imgSrc => {
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = prod.title;
+    gallery.appendChild(img);
+  });
+  
+  const descDiv = document.getElementById('modal-desc');
+  let html = `<p>${prod.description}</p>`;
+  if (prod.bullets && prod.bullets.length > 0) {
+    html += '<ul>';
+    prod.bullets.forEach(bullet => {
+      html += `<li>${bullet}</li>`;
+    });
+    html += '</ul>';
+  }
+  descDiv.innerHTML = html;
+  
+  const sizeBtns = document.querySelectorAll('.p-modal-size-btn');
+  sizeBtns.forEach(btn => {
+    if (btn.innerText === 'L') btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+  
+  document.getElementById('product-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('product-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function selectSize(btn) {
+  const buttons = btn.parentElement.querySelectorAll('.p-modal-size-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSelectedSize = btn.innerText;
+}
+
+function handleAddToCartClick() {
+  const prod = products[currentProductId];
+  if (!prod) return;
+
+  const existing = cart.find(item => item.productId === currentProductId && item.size === currentSelectedSize);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({
+      productId: currentProductId,
+      name: prod.name,
+      price: typeof prod.price === 'number' ? prod.price : parseInt(prod.price.replace(/[^\d]/g, '')) || 160000,
+      size: currentSelectedSize,
+      quantity: 1
+    });
+  }
+  
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCountBadge();
+  
+  const addBtn = document.getElementById('add-to-cart-btn');
+  addBtn.innerText = '✓ ADDED TO CART';
+  addBtn.style.backgroundColor = 'var(--brown-deep)';
+  addBtn.disabled = true;
+  
+  setTimeout(() => {
+    addBtn.innerText = 'Add to Cart';
+    addBtn.style.backgroundColor = 'var(--brown)';
+    addBtn.disabled = false;
+    closeModal();
+  }, 1000);
+}
+
+// Cart Modal Control
+function openCartModal() {
+  renderCartItems();
+  document.getElementById('cart-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCartModal() {
+  document.getElementById('cart-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function updateCartQuantity(idx, qty) {
+  if (qty <= 0) {
+    removeFromCart(idx);
+  } else {
+    cart[idx].quantity = qty;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCountBadge();
+    renderCartItems();
+  }
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCountBadge();
+  renderCartItems();
+}
+
+function clearCart() {
+  if (confirm('Clear entire cart?')) {
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCountBadge();
+    renderCartItems();
+  }
+}
+
+function updateCartCountBadge() {
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const badge = document.getElementById('cart-count-badge');
+  if (count > 0) {
+    badge.innerText = count;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderCartItems() {
+  const container = document.getElementById('cart-items-container');
+  if (cart.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 0; color: var(--text-dim);">
+        <p style="margin-bottom: 20px;">Your cart is empty</p>
+        <button class="btn btn-fill" onclick="closeCartModal()">Shop Drops</button>
+      </div>
+    `;
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  let html = `
+    <table style="width: 100%; border-collapse: collapse; border: var(--rule); margin-bottom: 28px;">
+      <thead>
+        <tr style="background: var(--surface); border-bottom: var(--rule);">
+          <th style="padding: 14px; text-align: left; font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Item</th>
+          <th style="padding: 14px; text-align: center; font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Size</th>
+          <th style="padding: 14px; text-align: center; font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Qty</th>
+          <th style="padding: 14px; text-align: right; font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Price</th>
+          <th style="padding: 14px; text-align: center; font-size: 10px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  cart.forEach((item, idx) => {
+    html += `
+      <tr style="border-bottom: var(--rule);">
+        <td style="padding: 14px; font-family: 'Space Mono', monospace; font-weight: 700; color: var(--cream);">${item.name}</td>
+        <td style="padding: 14px; text-align: center; color: var(--text);">${item.size}</td>
+        <td style="padding: 14px; text-align: center;">
+          <select onchange="updateCartQuantity(${idx}, parseInt(this.value))" style="background: var(--surface); border: 1px solid var(--brown-deep); color: var(--text); padding: 4px 8px; font-family: inherit; font-size: 11px;">
+            <option value="1" ${item.quantity === 1 ? 'selected' : ''}>1</option>
+            <option value="2" ${item.quantity === 2 ? 'selected' : ''}>2</option>
+            <option value="3" ${item.quantity === 3 ? 'selected' : ''}>3</option>
+            <option value="4" ${item.quantity === 4 ? 'selected' : ''}>4</option>
+            <option value="5" ${item.quantity === 5 ? 'selected' : ''}>5</option>
+          </select>
+        </td>
+        <td style="padding: 14px; text-align: right; color: var(--text);">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</td>
+        <td style="padding: 14px; text-align: center;">
+          <button onclick="removeFromCart(${idx})" style="background: transparent; border: none; color: var(--red); font-family: inherit; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;">[ REMOVE ]</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: var(--rule); padding-bottom: 20px; margin-bottom: 28px;">
+      <span style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); letter-spacing: .1em;">Subtotal (${totalItems} items)</span>
+      <span style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--cream); letter-spacing: .04em;">Rp ${total.toLocaleString('id-ID')}</span>
+    </div>
+    
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-fill" onclick="openCheckoutModal()" style="flex: 1; padding: 16px;">Proceed to Checkout</button>
+      <button class="btn btn-ghost" onclick="clearCart()" style="padding: 16px;">Clear Cart</button>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+// Checkout Modal Control
+function openCheckoutModal() {
+  closeCartModal();
+  document.getElementById('checkout-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckoutModal() {
+  document.getElementById('checkout-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function backToCartFromCheckout() {
+  closeCheckoutModal();
+  openCartModal();
+}
+
+async function handleCheckoutSubmit(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('checkout-name').value;
+  const email = document.getElementById('checkout-email').value;
+  const phone = document.getElementById('checkout-phone').value;
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const placeBtn = document.querySelector('#checkout-form button[type="submit"]');
+  placeBtn.disabled = true;
+  placeBtn.innerText = 'PROCESSING...';
+
+  try {
+    const orderData = {
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      items: cart,
+      total_price: total,
+      status: 'pending',
+      payment_method: 'manual_transfer',
+      notes: `Submitted via Integrated Shop SPA [${isDevelopment ? 'DEV' : 'PUBLISH'}]`
+    };
+
+    let orderId = null;
+
+    if (isDevelopment) {
+      // DEVELOPMENT MODE: Save to localStorage only
+      console.log('[DEVELOPMENT MODE] Saving order to localStorage', orderData);
+      const dummyOrderId = 'CX-DEV-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+      const devOrders = JSON.parse(localStorage.getItem('dev_orders') || '[]');
+      devOrders.push({ ...orderData, id: dummyOrderId, created_at: new Date().toISOString() });
+      localStorage.setItem('dev_orders', JSON.stringify(devOrders));
+      orderId = dummyOrderId;
+    } else {
+      // PUBLISH MODE: Save to Supabase
+      console.log('[PUBLISH MODE] Saving order to Supabase cloud');
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .insert([orderData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      orderId = data.id;
+    }
+
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCountBadge();
+
+    document.getElementById('checkout-form').reset();
+
+    closeCheckoutModal();
+    openConfirmationModal(orderId);
+  } catch (err) {
+    console.error('Error placing order:', err);
+    alert('Failed to place order. Please try again or book via Instagram.');
+  } finally {
+    placeBtn.disabled = false;
+    placeBtn.innerText = 'PLACE ORDER';
+  }
+}
+
+// Order Confirmation Modal Control
+function openConfirmationModal(orderId) {
+  document.getElementById('confirm-order-id').innerText = orderId ? orderId.slice(0, 8).toUpperCase() : 'CX-SUCCESS';
+  document.getElementById('confirmation-modal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmationModal() {
+  document.getElementById('confirmation-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Global modal close on ESC or click outside
+window.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeCartModal();
+    closeCheckoutModal();
+  }
+});
+
+window.addEventListener('click', function(e) {
+  const pModal = document.getElementById('product-modal');
+  const cartModal = document.getElementById('cart-modal');
+  const checkoutModal = document.getElementById('checkout-modal');
+  
+  if (e.target === pModal) closeModal();
+  if (e.target === cartModal) closeCartModal();
+  if (e.target === checkoutModal) closeCheckoutModal();
+});
+
+// Event Catalog Slider Animation
+let currentEventSlide = 0;
+function slideEvent(direction) {
+  const track = document.getElementById('event-slider-track');
+  const cards = document.querySelectorAll('.event-slider-card');
+  if (!track || cards.length === 0) return;
+  
+  const cardWidth = cards[0].getBoundingClientRect().width;
+  const gap = 20;
+  const totalCards = cards.length;
+  
+  const visibleCards = window.innerWidth > 800 ? 3 : 1;
+  const maxSlides = totalCards - visibleCards;
+  
+  currentEventSlide += direction;
+  
+  if (currentEventSlide < 0) {
+    currentEventSlide = maxSlides;
+  } else if (currentEventSlide > maxSlides) {
+    currentEventSlide = 0;
+  }
+  
+  const amount = currentEventSlide * (cardWidth + gap);
+  track.style.transform = `translateX(-${amount}px)`;
+}
+
+window.addEventListener('resize', () => {
+  currentEventSlide = 0;
+  const track = document.getElementById('event-slider-track');
+  if (track) track.style.transform = 'translateX(0)';
+});
+
+// Initialize everything on DOM Load
+window.addEventListener('DOMContentLoaded', initStore);
+</script>
+
+</body>
+</html>
